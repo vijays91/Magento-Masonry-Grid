@@ -1,0 +1,252 @@
+<?php
+$catId = $this->getCategoryId();
+$imageHelper = Mage::helper('catalog/image');
+$collection = Mage::getModel('catalog/category')
+                    ->load($catId)
+                    ->getProductCollection();
+$product = $collection->getData();
+?>
+<div class="image-gallery-outer">
+	<div class="image-detail">
+		<ul id="masonry-loop"  class="image-gallery">
+		<?php
+			foreach($product as $product_data) {
+				$product_id = $product_data['entity_id'];
+				$obj = Mage::getModel("catalog/product");
+				$_product = $obj->load($product_id);
+				// $image_url = $_product->getImageUrl();
+				$image_url = $imageHelper->init($_product, 'thumbnail');
+				$product_name = $_product->getName();
+				$product_short_desc = $_product->getShortDescription();
+    			$url = $_product->getProductUrl();
+				?>
+				<li class="gallery-item masonry-entry">
+					<div class="img-box">
+						<div class="img-box-inner">
+							<a class="imagegallery" href="<?php echo $image_url; ?>" title="<?php echo $product_name; ?>">	<img src="<?php echo $image_url; ?>" alt="<?php echo $product_name; ?>"/>
+							</a>
+							<div class="gallery-desc-box">
+								<div class="gallery-content">
+									<a href="<?php echo $url; ?>">
+										<h3 class="gallery-title">
+											<?php echo $product_name; ?>
+										</h3>
+									</a>
+									<!-- a class="image-link gallery-block image-link<?php echo $catid; ?>" data-effect="mfp-move-horizontal" href="<?php echo $image_url; ?>" title="<?php echo $product_name; ?>"><?php echo $product_name; ?><i class="fa"></i>
+									</a -->
+								</div>
+							</div>
+						</div>
+					</div>
+				</li>
+				<?php
+			}
+		?>
+</div>
+
+<script type="text/javascript">
+	jQuery(function($) {
+		// Gallery
+	jQuery('.image-link<?php echo $catid; ?>.gallery-block').magnificPopup({
+		  type: 'image',
+		  gallery:{
+			enabled:true,		
+			preload: function(e){
+				var interval,
+			hasSize,
+			onHasSize = function() {
+				if(hasSize) return;
+				// we ignore browsers that don't support naturalWidth
+				var naturalWidth = img[0].naturalWidth;
+
+				if(window.devicePixelRatio > 1 && naturalWidth > 0) {
+					img.css('max-width', naturalWidth / window.devicePixelRatio);
+				}
+				clearInterval(interval);
+				hasSize = true;
+			},
+			onLoaded = function() {
+				onHasSize();
+			},
+			onError = function() {
+				onHasSize();
+			},
+			checkSize = function() {
+				if(img[0].naturalWidth > 0) {
+					onHasSize();
+				}
+			},
+			img = $('<img />')
+				.on('load', onLoaded)
+				.on('error', onError)
+				// hd-image.jpg is optimized for the current pixel density
+				.attr('src', 'hd-image.jpg')
+				.appendTo(someContainer);
+				interval = setInterval(checkSize, 100);
+				checkSize();	
+			}			
+		  }		  
+		});				
+	});
+	jQuery(document).ready(function(){
+	var $container = jQuery('#masonry-loop');
+	var number;
+	// initialize Isotope
+	if($container.width() < 5000 && $container.width()>900){
+		number=3;
+	}
+	if($container.width() > 460 && $container.width() < 900){
+		number=2;
+	}
+	if($container.width() < 460){
+		number=1;
+	}
+	var container1 = document.querySelector('#masonry-loop');
+    //create empty var msnry
+    var msnry;
+    // initialize Masonry after all images have loaded
+    imagesLoaded( container1, function(){
+        msnry = new Masonry( container1,{
+            itemSelector:'.masonry-entry',
+            "gutter": 0,
+			"width":$container.width()/number
+        });
+    });
+ });
+</script>
+
+<?php
+/*
+$collection = $this->getImages();
+$imageData = $collection->getData();
+$catCollection = $this->getCategoryData();
+$catData = $catCollection->getData();
+$catid="";
+?>
+<div class="image-gallery-outer">
+	<div class="category-desc">
+	<?php foreach($catData as $key => $value)
+	{
+		$catid=$value['imagecategory_id'];
+		?>
+		<div class="title">
+			<h3><?php echo $value['category_title']; ?></h3>
+		</div>
+		<?php if($value['category_img']): ?>
+			<div class="cat-img">
+				<img src="<?php echo Mage::getBaseUrl('media').$value['category_img']; ?>" title="<?php echo $value['category_title']; ?>" alt="<?php echo $value['category_title']; ?>"/>
+			</div>
+			<?php //echo Mage::getBaseUrl('media'); ?>
+		<?php endif; ?>
+		
+		<?php if($value['category_description']): ?>
+			<div class="cat-desc">
+				<?php echo $value['category_description']; ?>
+			</div><?php
+			endif;
+		?><?php
+	}
+	?>
+	</div>
+
+	<div class="image-detail">
+		<ul id="masonry-loop"  class="image-gallery">
+		<?php foreach($imageData as $data): ?>
+			<?php //print_r($data); ?>
+			<li class="gallery-item masonry-entry">
+				<div class="img-box">
+					<div class="img-box-inner">
+						<a class="imagegallery" href="<?php echo Mage::getBaseUrl('media').$data['gallery_img']; ?>" title="<?php echo $data['image_title']; ?>"><img src="<?php echo Mage::getBaseUrl('media').$data['gallery_img']; ?>" alt="<?php echo $data['image_title']; ?>"/></a>
+						<div class="gallery-desc-box">
+							<div class="gallery-content">
+								<h3 class="gallery-title">
+									<?php echo $data['image_title']; ?>
+								</h3>								
+								<?php if($data['image_description']): ?>
+								<div class="gallery-desc">
+									<?php echo $data['image_description']; ?>
+								</div>
+								<?php endif; ?>								
+								<a class="image-link gallery-block image-link<?php echo $catid; ?>" data-effect="mfp-move-horizontal" href="<?php echo Mage::getBaseUrl('media').$data['gallery_img']; ?>" title="<?php echo $data['image_title']; ?>"><?php echo $data['image_title']; ?>
+									<i class="fa"></i>
+								</a>
+							</div>
+						</div>
+					</div>
+				</div>
+			</li>
+		<?php endforeach; ?>
+		</ul>
+	</div>
+<script type="text/javascript">
+	jQuery(function($) {
+		// Gallery
+	jQuery('.image-link<?php echo $catid; ?>.gallery-block').magnificPopup({
+		  type: 'image',
+		  gallery:{
+			enabled:true,		
+			preload: function(e){
+				var interval,
+			hasSize,
+			onHasSize = function() {
+				if(hasSize) return;
+				// we ignore browsers that don't support naturalWidth
+				var naturalWidth = img[0].naturalWidth;
+
+				if(window.devicePixelRatio > 1 && naturalWidth > 0) {
+					img.css('max-width', naturalWidth / window.devicePixelRatio);
+				}
+				clearInterval(interval);
+				hasSize = true;
+			},
+			onLoaded = function() {
+				onHasSize();
+			},
+			onError = function() {
+				onHasSize();
+			},
+			checkSize = function() {
+				if(img[0].naturalWidth > 0) {
+					onHasSize();
+				}
+			},
+			img = $('<img />')
+				.on('load', onLoaded)
+				.on('error', onError)
+				// hd-image.jpg is optimized for the current pixel density
+				.attr('src', 'hd-image.jpg')
+				.appendTo(someContainer);
+				interval = setInterval(checkSize, 100);
+				checkSize();	
+			}			
+		  }		  
+		});				
+	});
+	jQuery(document).ready(function(){
+	var $container = jQuery('#masonry-loop');
+	var number;
+	// initialize Isotope
+	if($container.width() < 5000 && $container.width()>900){
+		number=3;
+	}
+	if($container.width() > 460 && $container.width() < 900){
+		number=2;
+	}
+	if($container.width() < 460){
+		number=1;
+	}
+	var container1 = document.querySelector('#masonry-loop');
+    //create empty var msnry
+    var msnry;
+    // initialize Masonry after all images have loaded
+    imagesLoaded( container1, function(){
+        msnry = new Masonry( container1,{
+            itemSelector:'.masonry-entry',
+            "gutter": 0,
+			"width":$container.width()/number
+        });
+    });
+ });
+</script>
+</div>
+<?php */ ?>

@@ -1,0 +1,20 @@
+
+Add in .phtml file
+<?php 
+    $category_id = 12;
+    echo $this->getLayout()->createBlock('core/template')
+        ->setCategoryId($category_id)
+        ->setTemplate('masonry/masonry.phtml')
+        ->toHtml();
+?>
+
+
+Add in layout .xml file
+    <block type="core/template" name="masonry" template="masonry/masonry.phtml">
+        <action method="setCategoryId"><category_id>12</category_id></action>
+    </block>
+
+
+Add in CMS / static block file
+    {{block type="core/template" name="masonry" category_id="12" template="masonry/masonry.phtml"}}
+    
