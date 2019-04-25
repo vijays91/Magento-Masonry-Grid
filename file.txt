@@ -1,5 +1,5 @@
 
-Add in .phtml file
+#Add in .phtml file
 <?php 
     $category_id = 12;
     echo $this->getLayout()->createBlock('core/template')
@@ -9,12 +9,26 @@ Add in .phtml file
 ?>
 
 
-Add in layout .xml file
+#Add in layout .xml file
     <block type="core/template" name="masonry" template="masonry/masonry.phtml">
         <action method="setCategoryId"><category_id>12</category_id></action>
     </block>
 
 
-Add in CMS / static block file
+#Add in CMS / static block file
     {{block type="core/template" name="masonry" category_id="12" template="masonry/masonry.phtml"}}
-    
+
+
+================================================================================================================
+
+#Add script and stayle in layout xml file.
+	<default>
+		<reference name="head">
+			<action method="addItem"><type>skin_js</type><name>js/imagegallery/jquery-1.10.2.min.js</name></action>
+			<action method="addItem"><type>skin_js</type><name>js/imagegallery/imagesloaded.js</name></action>
+			<action method="addItem"><type>skin_js</type><name>js/imagegallery/masonry.min.js</name></action>
+			<action method="addItem"><type>skin_js</type><name>js/imagegallery/jquery.magnific-popup.min.js</name></action>
+			<action method="addItem"><type>skin_css</type><name>css/imagegallery/imagegallery.css</name></action>
+			<action method="addItem"><type>skin_css</type><name>css/imagegallery/magnific-popup.css</name></action>
+		</reference>
+	</default>
